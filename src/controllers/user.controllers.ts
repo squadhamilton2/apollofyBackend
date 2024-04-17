@@ -3,7 +3,7 @@ import UserModel from "../models/user.models";
 
 export const getAllUser = async (req: Request, res: Response) => {
   try {
-    const allUsers = await UserModel.find().populate("movies");
+    const allUsers = await UserModel.find();
     res.status(200).send(allUsers);
   } catch (error) {
     res.status(400).send(error);
@@ -11,10 +11,10 @@ export const getAllUser = async (req: Request, res: Response) => {
 };
 
 export const createUser = async (req: Request, res: Response) => {
-  const { name, email, password } = req.body;
+  const { username, role, name, firstSurname, secondSurname, email, password, following, followers, autors, albums, playlists } = req.body;
 
   try {
-    const newUser = await UserModel.create({ name, email, password });
+    const newUser = await UserModel.create({ username, role, name, firstSurname, secondSurname, email, password, following, followers, autors, albums, playlists });
     res.status(201).send(newUser);
   } catch (error) {
     res.status(400).send(error);

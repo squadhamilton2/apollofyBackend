@@ -9,6 +9,7 @@ export enum Roles {
 
 interface IUserSchema {
   username: String;
+  picture: String;
   role: Roles; //not sure if that's a proper way of adding the type
   name: String;
   firstSurname: String;
@@ -30,6 +31,10 @@ const userSchema = new Schema<IUserSchema>(
       type: String,
       required: true,
       unique: true
+    },
+    picture: {
+      type: String,
+      required: false
     },
     role: {
       type: String, // we should add type of Roles enum

@@ -2,7 +2,7 @@ import { Schema, model } from "mongoose";
 
 interface IPlaylistSchema {
     songs: Array<Number>;
-    publicAcces: boolean;
+    publicAccess: boolean;
     owner: Number;
     writers: Array<Number>;
     readers: Array<Number>
@@ -14,7 +14,7 @@ const playlistSchema = new Schema<IPlaylistSchema>(
             type: [Number],
             required: true
         },
-        publicAcces:{
+        publicAccess:{
             type: Boolean,
             required: true,
         },

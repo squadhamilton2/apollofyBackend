@@ -1,20 +1,30 @@
 import { Request, Response } from "express";
 import UserModel from "../models/user.models";
 
-export const getUser = async (req: Request, res: Response) => {
+export const getAllUser = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
-    const user = await UserModel.findById(userId); 
-    
-    if (!user) { 
-      return res.status(404).send("Usuario no encontrado");
-    }
-    
-    res.status(200).send(user); 
-   } catch (error) { 
-    res.status(500).send(error);
+    const allUsers = await UserModel.find().select('name username _id password');
+    res.status(200).send(allUsers);
+  } catch (error) {
+    res.status(400).send(error);
   }
 };
+
+// export const getUser = async (req: Request, res: Response) => {
+//   try {
+//     const { userId } = req.params;
+//     const user = await UserModel.findOne({name: name}); 
+    
+//     if (!user) { 
+//       return res.status(404).send("Usuario no encontrado");
+//     }
+    
+//     res.status(200).send(user); 
+//    } catch (error) { 
+//     res.status(500).send(error);
+//   }
+// };
 
 
 export const createUser = async (req: Request, res: Response) => {

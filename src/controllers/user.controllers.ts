@@ -5,7 +5,11 @@ export const getAllUser = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
     const allUsers = await UserModel.find().select('name username _id password');
-    res.status(200).send(allUsers);
+    res.status(200).send({
+        data: allUsers,
+        type: "array",
+        msg: "Here are your users!"
+    });
   } catch (error) {
     res.status(400).send(error);
   }
@@ -32,7 +36,10 @@ export const createUser = async (req: Request, res: Response) => {
 
   try {
     const newUser = await UserModel.create({ username, picture, role, name, firstSurname, secondSurname, email, password, following, followers, autors, albums, playlists });
-    res.status(201).send(newUser);
+    res.status(201).send({
+        data: newUser,
+        msg: "New user created"
+    });
   } catch (error) {
     res.status(400).send(error);
   }
@@ -48,7 +55,10 @@ export const updateUser = async (req: Request, res: Response) => {
       { username, name, picture, firstSurname, secondSurname, email, password },
       { new: true }
     );
-    res.status(201).send(userUpdated);
+    res.status(201).send({
+        data: userUpdated,
+        msg: "User updated"
+    });
   } catch (error) {
     res.status(400).send(error);
     console.log(error);
@@ -59,7 +69,10 @@ export const deleteUser = async (req: Request, res: Response) => {
   const { userId } = req.params;
   try {
     const userDeleted = await UserModel.findByIdAndDelete({ _id: userId });
-    res.status(200).send(userDeleted);
+    res.status(200).send({
+      data: userDeleted,
+      msg: "User deleted"    
+    });
   } catch (error) {
     res.status(400).send(error);
   }

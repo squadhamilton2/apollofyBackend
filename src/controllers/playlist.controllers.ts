@@ -10,7 +10,10 @@ export const getPlaylist = async (req: Request, res: Response) => {
       return res.status(404).send("Playlist no encontrada");
     }
     
-    res.status(200).send(playlist); 
+    res.status(200).send({
+        data: playlist,
+        msg: "Here are your playlist"
+    }); 
    } catch (error) { 
     res.status(500).send(error);
   }
@@ -21,7 +24,9 @@ export const createPlaylist = async (req: Request, res: Response) => {
   
     try {
       const newPlaylist = await PlaylistModel.create({ songs, publicAccess, owner, writers, readers });
-      res.status(201).send(newPlaylist);
+      res.status(201).send({
+          data: newPlaylist,
+          msg: "Playlist created"});
     } catch (error) {
       res.status(400).send(error);
     }
@@ -37,7 +42,10 @@ export const createPlaylist = async (req: Request, res: Response) => {
         { songs, publicAccess, owner, writers, readers },
         { new: true }
       );
-      res.status(201).send(playlistUpdated);
+      res.status(201).send({
+          data: playlistUpdated,
+          msg: "Playlist updated"
+        });
     } catch (error) {
       res.status(400).send(error);
       console.log(error);
@@ -49,7 +57,9 @@ export const createPlaylist = async (req: Request, res: Response) => {
     const { userId } = req.params;
     try {
       const playlistDeleted = await PlaylistModel.findByIdAndDelete({ _id: userId });
-      res.status(200).send(playlistDeleted);
+      res.status(200).send({
+        data: playlistDeleted,
+        msg: "Playlist deleted"});
     } catch (error) {
       res.status(400).send(error);
     }

@@ -10,7 +10,10 @@ export const getAlbum = async (req: Request, res: Response) => {
         return res.status(404).send("Album no encontrado");
       }
       
-      res.status(200).send(album); 
+      res.status(200).send({
+            data: album,
+            msg: "Here are your albums!"
+        }); 
      } catch (error) { 
       res.status(500).send(error);
     }
@@ -22,7 +25,10 @@ export const getAlbum = async (req: Request, res: Response) => {
   
     try {
       const newAlbum = await AlbumModel.create({ name, description, thumbnail, length, autorId, songs, publishedAt });
-      res.status(201).send(newAlbum);
+      res.status(201).send({
+            data: newAlbum,
+            msg: "New album created"
+        });
     } catch (error) {
       res.status(400).send(error);
     }
@@ -38,7 +44,10 @@ export const getAlbum = async (req: Request, res: Response) => {
         { name, description, thumbnail, length, autorId, songs, publishedAt },
         { new: true }
       );
-      res.status(201).send(albumUpdated);
+      res.status(201).send({
+            data: albumUpdated,
+            msg: "Album updated"
+        });
     } catch (error) {
       res.status(400).send(error);
       console.log(error);
@@ -49,7 +58,10 @@ export const getAlbum = async (req: Request, res: Response) => {
     const { albumId } = req.params;
     try {
       const albumDeleted = await AlbumModel.findByIdAndDelete({ _id: albumId });
-      res.status(200).send(albumDeleted);
+      res.status(200).send({
+            data: albumDeleted,
+            msg: "Album deleted"
+        });
     } catch (error) {
       res.status(400).send(error);
     }

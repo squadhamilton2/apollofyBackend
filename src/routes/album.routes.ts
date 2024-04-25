@@ -4,7 +4,7 @@ import {
     createAlbum,
   deleteAlbum,
   getAlbum,
-  updateAlbum,
+//   updateAlbum,
  
 } from "../controllers/album.controllers";
 
@@ -12,7 +12,7 @@ const albumRouter = Router();
 
 albumRouter.get("/:albumId", getAlbum);
 albumRouter.post("/", createAlbum);
-albumRouter.patch("/:albumId", updateAlbum);
+// albumRouter.patch("/:albumId", updateAlbum);
 albumRouter.delete("/:albumId", deleteAlbum);
 
 export default albumRouter;

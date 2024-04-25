@@ -34,25 +34,25 @@ export const getAlbum = async (req: Request, res: Response) => {
     }
   };
   
-  export const updateAlbum = async (req: Request, res: Response) => {
-    const { name, description, thumbnail, length, autorId, songs, publishedAt } = req.body;
-    const { albumId } = req.params;
+//   export const updateAlbum = async (req: Request, res: Response) => {
+//     const { name, description, thumbnail, length, autorId, songs, publishedAt } = req.body;
+//     const { albumId } = req.params;
   
-    try {
-      const albumUpdated = await AlbumModel.findByIdAndUpdate(
-        { _id: albumId },
-        { name, description, thumbnail, length, autorId, songs, publishedAt },
-        { new: true }
-      );
-      res.status(201).send({
-            data: albumUpdated,
-            msg: "Album updated"
-        });
-    } catch (error) {
-      res.status(400).send(error);
-      console.log(error);
-    }
-  };
+//     try {
+//       const albumUpdated = await AlbumModel.findByIdAndUpdate(
+//         { _id: albumId },
+//         { name, description, thumbnail, length, autorId, songs, publishedAt },
+//         { new: true }
+//       );
+//       res.status(201).send({
+//             data: albumUpdated,
+//             msg: "Album updated"
+//         });
+//     } catch (error) {
+//       res.status(400).send(error);
+//       console.log(error);
+//     }
+//   };
   
   export const deleteAlbum = async (req: Request, res: Response) => {
     const { albumId } = req.params;

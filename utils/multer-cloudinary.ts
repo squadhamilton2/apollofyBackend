@@ -16,7 +16,17 @@ const filter = (req: any, file: any, cb: any) => {
     cb(null, true);
 };
 
-const multerCloudinaryImage = multer({
+const songFilter = (req: any, file: any, cb: any) => {
+    if (!file.mimetype.match(/\/(mp3|wav)$/)) {
+        return cb(
+            new Error("Only mp3 or wav files are allowed"),
+            false
+        );
+    }
+    cb(null, true);
+};
+
+export const multerCloudinaryImage = multer({
     storage: storage,
     fileFilter: filter,
     limits: {
@@ -24,6 +34,13 @@ const multerCloudinaryImage = multer({
     },
 });
 
-console.log("multerCloudinaryImage", multerCloudinaryImage);
+export const multerCloudinarySong = multer({
+    storage: storage,
+    fileFilter: songFilter,
+    limits: {
+        fileSize: 20 * 1024 * 1024, // no larger than 20mb
+    },
+});
 
-export default multerCloudinaryImage;
+
+console.log("multerCloudinaryImage", multerCloudinaryImage);

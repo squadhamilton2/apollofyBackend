@@ -17,7 +17,7 @@ const songSchema = new Schema<ISongSchema>(
     },
     songUrl: {
       type: String,
-      required: true,
+      required: false,
       unique: true
     },
     length: {
@@ -26,18 +26,18 @@ const songSchema = new Schema<ISongSchema>(
     },
     autorId: {
       type: String,
-      required: true,
-      unique:true
+      required: false,
+      unique: true
     },
     albumId: {
       type: String,
       required: false,
-      unique:true
+      unique: true
     },
     genreId: {
       type: String,
       required: false,
-      unique:true
+      unique: true
     }  
   }
 );

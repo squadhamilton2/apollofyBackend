@@ -1,5 +1,5 @@
 import multer from "multer";
-import cloudinary from "../src/services/cloudinary/config";
+import cloudinary from "../services/cloudinary/config";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
 
 const storage = new CloudinaryStorage({
@@ -43,4 +43,4 @@ export const multerCloudinarySong = multer({
 });
 
 
-console.log("multerCloudinaryImage", multerCloudinaryImage);
+// console.log("multerCloudinaryImage", multerCloudinaryImage);

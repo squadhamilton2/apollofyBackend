@@ -1,4 +1,4 @@
-import cloudinary from "../src/services/cloudinary/config";
+import cloudinary from "../services/cloudinary/config";
 
 export function getPublicId(url: any) {
     const splitUrl = url.split("/");

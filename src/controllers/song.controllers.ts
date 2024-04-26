@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import SongModel from "../models/song.model";
-import { deleteSongFromCloudinary, getPublicId, uploadSongToCloudinary } from "../../utils/cloudinary";
+import { deleteSongFromCloudinary, getPublicId, uploadSongToCloudinary } from "../utils/cloudinary";
 import { Multer } from "multer"
 
 export const getAllSong = async (req: Request, res: Response) => {
@@ -16,20 +16,20 @@ export const getAllSong = async (req: Request, res: Response) => {
   }
 };
 
-export const createSong = async (req: Request & { file: Multer }, res: Response) => {
+export const createSong = async (req: Request, res: Response) => {
   console.log("entro en createSong");
 
-  const { name, songUrl, length } = req.body;
+  const { name, length } = req.body;
   const song = req.file?.path;
 
-  const userId = parseInt(req.params.userId);
+  const userId = req.params.userId;
   console.log({ userId });
 
   if (!name) {
       return res.status(400).send({ message: "The field name is required" });
   }
 
-  if (!songUrl) {
+  if (!song) {
       return res.status(400).send({ message: "The field songUrl is required" });
   }
 

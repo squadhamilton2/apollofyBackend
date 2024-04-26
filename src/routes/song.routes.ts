@@ -3,7 +3,7 @@ import {
     createSong,
     deleteSong,
     getAllSong,
-    updateSong,
+    // updateSong,
 
 } from "../controllers/song.controllers";
 
@@ -12,7 +12,7 @@ const songRouter = Router();
 
 songRouter.get("/", getAllSong);
 songRouter.post("/", createSong);
-songRouter.patch("/:songId", updateSong);
+// songRouter.patch("/:songId", updateSong);
 songRouter.delete("/:songId", deleteSong);
 
 export default songRouter;

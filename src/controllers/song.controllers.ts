@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import SongModel from "../models/song.model";
 import { deleteSongFromCloudinary, getPublicId, uploadSongToCloudinary } from "../../utils/cloudinary";
+import { Multer } from "multer"
 
 export const getAllSong = async (req: Request, res: Response) => {
   try {
@@ -15,7 +16,7 @@ export const getAllSong = async (req: Request, res: Response) => {
   }
 };
 
-export const createSong = async (req: Request, res: Response) => {
+export const createSong = async (req: Request & { file: Multer }, res: Response) => {
   console.log("entro en createSong");
 
   const { name, songUrl, length } = req.body;

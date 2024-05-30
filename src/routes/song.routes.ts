@@ -14,6 +14,7 @@ const songRouter = Router();
 
 songRouter.get("/", getAllSong);
 songRouter.post("/:userId", multerCloudinarySong.single("songUrl"), createSong);
+songRouter.post("/:userId", multerCloudinarySong.single("songUrl"), createSong);
 // songRouter.patch("/:songId", updateSong);
 songRouter.delete("/:songId", deleteSong);
 

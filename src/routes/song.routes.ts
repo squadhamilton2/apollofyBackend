@@ -9,12 +9,11 @@ import {
   multerCloudinarySong,
   multerCloudinaryImage,
 } from "../utils/multer-cloudinary";
-console.log({ multerCloudinaryImage });
 
 const songRouter = Router();
 
 songRouter.get("/", getAllSong);
-songRouter.post("/:userId", multerCloudinaryImage.single("image"), createSong);
+songRouter.post("/:userId", multerCloudinarySong.single("songUrl"), createSong);
 // songRouter.patch("/:songId", updateSong);
 songRouter.delete("/:songId", deleteSong);
 

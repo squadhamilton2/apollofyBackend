@@ -1,11 +1,9 @@
 import { Router } from "express";
 import {
-
-    createAlbum,
+  createAlbum,
   deleteAlbum,
   getAlbum,
-//   updateAlbum,
- 
+  //   updateAlbum,
 } from "../controllers/album.controllers";
 
 const albumRouter = Router();

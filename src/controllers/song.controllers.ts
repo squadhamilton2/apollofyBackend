@@ -21,48 +21,44 @@ export const getAllSong = async (req: Request, res: Response) => {
 };
 
 export const createSong = async (req: Request, res: Response) => {
-  console.log("entro en createSong");
-
   const { name, length } = req.body;
   const songUrl = req.file?.path;
-  console.log({ name, length, songUrl });
+
   const userId = req.params.userId;
-  console.log({ userId });
 
-  // if (!name) {
-  //   return res.status(400).send({ message: "The field name is required" });
-  // }
+  if (!name) {
+    return res.status(400).send({ message: "The field name is required" });
+  }
 
-  // if (!songUrl) {
-  //   return res.status(400).send({ message: "The field songUrl is required" });
-  // }
+  if (!songUrl) {
+    return res.status(400).send({ message: "The field songUrl is required" });
+  }
 
-  // if (!length) {
-  //   return res.status(400).send({ message: "The field length is required" });
-  // }
+  if (!length) {
+    return res.status(400).send({ message: "The field length is required" });
+  }
 
-  // const songUploadedToCloudinary = await uploadSongToCloudinary(songUrl);
-  // console.log({ songUploadedToCloudinary });
+  const songUploadedToCloudinary = await uploadSongToCloudinary(songUrl);
 
-  // try {
-  //   const newSong = new SongModel({
-  //     name: name,
-  //     songUrl: songUploadedToCloudinary,
-  //     length: length,
-  //   });
+  try {
+    const newSong = new SongModel({
+      name: name,
+      songUrl: songUploadedToCloudinary,
+      length: length,
+    });
 
-  //   const savedSong = await newSong.save();
+    const savedSong = await newSong.save();
 
-  //   const song = await SongModel.findById(savedSong._id).populate("genres");
+    const song = await SongModel.findById(savedSong._id).populate("genres");
 
-  //   res.status(201).send({
-  //     msg: "Song created successfully",
-  //     data: song,
-  //     typeof: typeof song,
-  //   });
-  // } catch (error) {
-  //   res.status(400).send(error);
-  // }
+    res.status(201).send({
+      msg: "Song created successfully",
+      data: song,
+      typeof: typeof song,
+    });
+  } catch (error) {
+    res.status(400).send(error);
+  }
 };
 
 // export const updateSong = async (req: Request, res: Response) => {

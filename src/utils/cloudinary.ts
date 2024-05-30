@@ -4,20 +4,14 @@ export function getPublicId(url: any) {
   const splitUrl = url.split("/");
   const concatUrlLastTwoPositions = splitUrl.splice(7).join("/");
   const publicId = concatUrlLastTwoPositions.split(".")[0];
-  // console.log({ splitUrl });
-  // console.log({ concatUrlLastTwoPositions });
-  // console.log({ publicId });
+
   return publicId;
 }
 
 export async function uploadImageToCloudinary(image: any) {
-  console.log("entro en uploadImageToCloudinary");
-
   const fileName = image?.originalname;
-  // console.log({ fileName });
 
   const fileNameWithoutExtension = fileName?.split(".")[0];
-  console.log({ fileNameWithoutExtension });
 
   const uploadImageToCloudinary = await cloudinary.uploader.upload(image, {
     folder: "image",
@@ -27,7 +21,6 @@ export async function uploadImageToCloudinary(image: any) {
   if (!uploadImageToCloudinary) {
     return "Sync error with cloudinary. The image wasn't uploaded";
   }
-  console.log({ uploadImageToCloudinary });
 
   return uploadImageToCloudinary.secure_url;
 }
@@ -49,13 +42,9 @@ export async function deleteImageFromClodinary(publicId: any) {
 }
 
 export async function uploadSongToCloudinary(song: any) {
-  console.log("entro en uploadSongToCloudinary");
-
   const fileName = song?.originalname;
-  // console.log({ fileName });
 
   const fileNameWithoutExtension = fileName?.split(".")[0];
-  console.log({ fileNameWithoutExtension });
 
   const uploadSongToCloudinary = await cloudinary.uploader.upload(song, {
     folder: "songs",
@@ -65,7 +54,6 @@ export async function uploadSongToCloudinary(song: any) {
   if (!uploadSongToCloudinary) {
     return "Sync error with cloudinary. The song wasn't uploaded";
   }
-  console.log({ uploadSongToCloudinary });
 
   return uploadSongToCloudinary.secure_url;
 }

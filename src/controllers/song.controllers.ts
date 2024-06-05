@@ -1,11 +1,12 @@
 import { Request, Response } from "express";
+import fs from "fs-extra";
 import SongModel from "../models/song.model";
 import {
-  deleteSongFromCloudinary,
-  getPublicId,
-  uploadSongToCloudinary,
+  deleteAudioCloudinary,
+  deleteImageCloudinary,
+  uploadAudioCloudinary,
+  uploadImageCloudinary,
 } from "../utils/cloudinary";
-import { Multer } from "multer";
 
 export const getAllSong = async (req: Request, res: Response) => {
   try {
@@ -21,64 +22,53 @@ export const getAllSong = async (req: Request, res: Response) => {
 };
 
 export const createSong = async (req: Request, res: Response) => {
-  const { name, length } = req.body;
-  const songUrl = req.file?.path;
+  const { name } = req.body;
+  const imageUrl = req.files?.imageUrl;
+  const songUrl = req.files?.songUrl;
+  const { userId } = req.params;
 
-  const userId = req.params.userId;
-
-  if (!name) {
-    return res.status(400).send({ message: "The field name is required" });
+  if (!name || !imageUrl || !songUrl) {
+    return res
+      .status(400)
+      .send("The fields name, songUrl, imageUrl are required");
   }
-
-  if (!songUrl) {
-    return res.status(400).send({ message: "The field songUrl is required" });
-  }
-
-  if (!length) {
-    return res.status(400).send({ message: "The field length is required" });
-  }
-
-  const songUploadedToCloudinary = await uploadSongToCloudinary(songUrl);
 
   try {
-    const newSong = new SongModel({
-      name: name,
-      songUrl: songUploadedToCloudinary,
-      length: length,
-    });
+    if (Array.isArray(imageUrl) || Array.isArray(songUrl)) {
+      return res.status(400).json({
+        msg: "You can only upload one file per track.",
+      });
+    } else {
+      const resultImageUrl = await uploadImageCloudinary(imageUrl.tempFilePath);
+      const resultSongUrl = await uploadAudioCloudinary(songUrl.tempFilePath);
 
-    const savedSong = await newSong.save();
+      const newSong = new SongModel({
+        name,
+        songUrl: resultSongUrl.secure_url,
+        public_id_songUrl: resultSongUrl.public_id,
+        // duration: resultUrl.duration,
+        user: userId,
+        imageUrl: resultImageUrl.secure_url,
+        public_id_imageUrl: resultImageUrl.public_id,
+        // genres: genresId,
+        // artist: artistId,
+        // album: albumId || null,
+      });
 
-    const song = await SongModel.findById(savedSong._id).populate("genres");
+      await newSong.save();
 
-    res.status(201).send({
-      msg: "Song created successfully",
-      data: song,
-      typeof: typeof song,
-    });
+      await fs.unlink(imageUrl.tempFilePath);
+      await fs.unlink(songUrl.tempFilePath);
+
+      return res.status(201).send({
+        msg: `New song has been created successfully`,
+        data: newSong,
+      });
+    }
   } catch (error) {
-    res.status(400).send(error);
+    return res.status(400).send(error);
   }
 };
-
-// export const updateSong = async (req: Request, res: Response) => {
-//   const { name, songUrl, length, autorId, albumId, genreId } = req.body;
-//   const { songId } = req.params;
-
-//   try {
-//     const songUpdated = await SongModel.findByIdAndUpdate(
-//       { _id: songId },
-//       { name, songUrl, length, autorId, albumId, genreId },
-//       { new: true }
-//     );
-//     res.status(201).send({
-//         data: songUpdated,
-//         msg: "Song updated"});
-//   } catch (error) {
-//     res.status(400).send(error);
-//     console.log(error);
-//   }
-// };
 
 export const deleteSong = async (req: Request, res: Response) => {
   const { id } = req.params;
@@ -94,7 +84,8 @@ export const deleteSong = async (req: Request, res: Response) => {
       return res.status(404).send({ message: "Song not found" });
     }
 
-    deleteSongFromCloudinary(getPublicId(song.songUrl));
+    await deleteImageCloudinary(song.public_id_imageUrl);
+    await deleteAudioCloudinary(song.public_id_songUrl);
 
     res.status(200).send(song);
   } catch (error) {

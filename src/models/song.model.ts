@@ -1,13 +1,15 @@
 import { Schema, model } from "mongoose";
 
 interface ISongSchema {
-  name: String;
-  songUrl: String;
-  imageUrl: String;
-  length: String;
-  autorId: Number;
-  albumId: Number;
-  genreId: Number;
+  name: string;
+  songUrl: string;
+  public_id_songUrl: string;
+  imageUrl: string;
+  public_id_imageUrl: string;
+  length: string;
+  autorId: number;
+  albumId: number;
+  genreId: number;
 }
 
 const songSchema = new Schema<ISongSchema>({
@@ -20,26 +22,35 @@ const songSchema = new Schema<ISongSchema>({
     required: true,
     unique: true,
   },
+  public_id_songUrl: {
+    type: String,
+    required: false,
+    unique: true,
+  },
   imageUrl: {
     type: String,
     required: true,
+  },
+  public_id_imageUrl: {
+    type: String,
+    required: false,
   },
   length: {
     type: String,
     required: false,
   },
   autorId: {
-    type: String,
+    type: Number,
     required: false,
     unique: true,
   },
   albumId: {
-    type: String,
+    type: Number,
     required: false,
     unique: true,
   },
   genreId: {
-    type: String,
+    type: Number,
     required: false,
     unique: true,
   },

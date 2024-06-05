@@ -1,11 +1,12 @@
 import { Request, Response } from "express";
+import fs from "fs-extra";
 import SongModel from "../models/song.model";
-// import {
-//   deleteSongFromCloudinary,
-//   getPublicId,
-//   uploadSongToCloudinary,
-// } from "../utils/cloudinary";
-// import { Multer } from "multer";
+import {
+  deleteAudioCloudinary,
+  deleteImageCloudinary,
+  uploadAudioCloudinary,
+  uploadImageCloudinary,
+} from "../utils/cloudinary";
 
 export const getAllSong = async (req: Request, res: Response) => {
   try {
@@ -20,84 +21,74 @@ export const getAllSong = async (req: Request, res: Response) => {
   }
 };
 
-// export const createSong = async (req: Request, res: Response) => {
-//   const { name, length } = req.body;
-//   const songUrl = req.file?.path;
+export const createSong = async (req: Request, res: Response) => {
+  const { name } = req.body;
+  const imageUrl = req.files?.imageUrl;
+  const songUrl = req.files?.songUrl;
+  const { userId } = req.params;
 
-//   const userId = req.params.userId;
+  if (!name || !imageUrl || !songUrl) {
+    return res
+      .status(400)
+      .send("The fields name, songUrl, imageUrl are required");
+  }
 
-//   if (!name) {
-//     return res.status(400).send({ message: "The field name is required" });
-//   }
+  try {
+    if (Array.isArray(imageUrl) || Array.isArray(songUrl)) {
+      return res.status(400).json({
+        msg: "You can only upload one file per track.",
+      });
+    } else {
+      const resultImageUrl = await uploadImageCloudinary(imageUrl.tempFilePath);
+      const resultSongUrl = await uploadAudioCloudinary(songUrl.tempFilePath);
 
-//   if (!songUrl) {
-//     return res.status(400).send({ message: "The field songUrl is required" });
-//   }
+      const newSong = new SongModel({
+        name,
+        songUrl: resultSongUrl.secure_url,
+        public_id_songUrl: resultSongUrl.public_id,
+        // duration: resultUrl.duration,
+        user: userId,
+        imageUrl: resultImageUrl.secure_url,
+        public_id_imageUrl: resultImageUrl.public_id,
+        // genres: genresId,
+        // artist: artistId,
+        // album: albumId || null,
+      });
 
-//   if (!length) {
-//     return res.status(400).send({ message: "The field length is required" });
-//   }
+      await newSong.save();
 
-//   const songUploadedToCloudinary = await uploadSongToCloudinary(songUrl);
+      await fs.unlink(imageUrl.tempFilePath);
+      await fs.unlink(songUrl.tempFilePath);
 
-//   try {
-//     const newSong = new SongModel({
-//       name: name,
-//       songUrl: songUploadedToCloudinary,
-//       length: length,
-//     });
+      return res.status(201).send({
+        msg: `New song has been created successfully`,
+        data: newSong,
+      });
+    }
+  } catch (error) {
+    return res.status(400).send(error);
+  }
+};
 
-//     const savedSong = await newSong.save();
+export const deleteSong = async (req: Request, res: Response) => {
+  const { id } = req.params;
 
-//     const song = await SongModel.findById(savedSong._id).populate("genres");
+  if (!id) {
+    return res.status(400).send({ message: "The field id is required" });
+  }
 
-//     res.status(201).send({
-//       msg: "Song created successfully",
-//       data: song,
-//       typeof: typeof song,
-//     });
-//   } catch (error) {
-//     res.status(400).send(error);
-//   }
-// };
+  try {
+    const song = await SongModel.findByIdAndDelete(id);
 
-// // export const updateSong = async (req: Request, res: Response) => {
-// //   const { name, songUrl, length, autorId, albumId, genreId } = req.body;
-// //   const { songId } = req.params;
+    if (!song) {
+      return res.status(404).send({ message: "Song not found" });
+    }
 
-// //   try {
-// //     const songUpdated = await SongModel.findByIdAndUpdate(
-// //       { _id: songId },
-// //       { name, songUrl, length, autorId, albumId, genreId },
-// //       { new: true }
-// //     );
-// //     res.status(201).send({
-// //         data: songUpdated,
-// //         msg: "Song updated"});
-// //   } catch (error) {
-// //     res.status(400).send(error);
-// //     console.log(error);
-// //   }
-// // };
+    await deleteImageCloudinary(song.public_id_imageUrl);
+    await deleteAudioCloudinary(song.public_id_songUrl);
 
-// export const deleteSong = async (req: Request, res: Response) => {
-//   const { id } = req.params;
-
-//   if (!id) {
-//     return res.status(400).send({ message: "The field id is required" });
-//   }
-
-//   try {
-//     const song = await SongModel.findByIdAndDelete(id);
-
-//     if (!song) {
-//       return res.status(404).send({ message: "Song not found" });
-//     }
-
-//     deleteSongFromCloudinary(getPublicId(song.songUrl));
-
-//     res.status(200).send(song);
-//   } catch (error) {
-//     res.status(500).send({ message: "Internal server error" });
-//   }
-// };
+    res.status(200).send(song);
+  } catch (error) {
+    res.status(500).send({ message: "Internal server error" });
+  }
+};

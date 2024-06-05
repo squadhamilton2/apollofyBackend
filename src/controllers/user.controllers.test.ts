@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import { getAllSong } from "./song.controllers";
-import SongModel from "../models/song.model";
+import UserModel from "../models/user.models";
+import { getAllUser } from "./user.controllers";
 
-jest.mock("../models/song.model");
+jest.mock("../models/user.models");
 
 const mockRequest = (): Partial<Request> => {
   return {};
@@ -16,37 +16,37 @@ const mockResponse = (): Partial<Response> => {
   return res;
 };
 
-describe("getAllSong Controller", () => {
-  it("should return all songs and status 200", async () => {
-    const allSongs = [
-      { id: 1, title: "Song1" },
-      { id: 2, title: "Song2" },
+describe("getAllUser Controller", () => {
+  it("should return all users and status 200", async () => {
+    const allUsers = [
+      { id: 1, name: "User1" },
+      { id: 2, name: "User2" },
     ];
 
-    (SongModel.find as jest.Mock).mockResolvedValue(allSongs);
+    (UserModel.find as jest.Mock).mockResolvedValue(allUsers);
 
     const req = mockRequest() as Request;
     const res = mockResponse() as Response;
 
-    await getAllSong(req, res);
+    await getAllUser(req, res);
 
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.send).toHaveBeenCalledWith({
-      data: allSongs,
-      msg: "Here are your songs!",
+      data: allUsers,
+      //   type: "array",
+      msg: "Here are your users!",
     });
-    expect(res.json).toHaveBeenCalledWith(allSongs);
   });
 
   it("should return status 400 on error", async () => {
     const error = new Error("Something went wrong");
 
-    (SongModel.find as jest.Mock).mockRejectedValue(error);
+    (UserModel.find as jest.Mock).mockRejectedValue(error);
 
     const req = mockRequest() as Request;
     const res = mockResponse() as Response;
 
-    await getAllSong(req, res);
+    await getAllUser(req, res);
 
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.send).toHaveBeenCalledWith(error);
